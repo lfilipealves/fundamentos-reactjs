@@ -11,7 +11,7 @@ const posts = [
     author: {
       avatarUrl: 'https://cdn3d.iconscout.com/3d/premium/thumb/programmer-3d-icon-download-in-png-blend-fbx-gltf-file-formats--development-coding-programming-profession-avatar-pack-people-icons-7675299.png',
       name:'Diego Fernandes',
-      role: 'CTO @Rocketseat'
+      role: 'CTO @Rocketseat',
     },
     content: [ 
          { type: 'paragraph', content: 'Fala galeraa 👋'},
@@ -19,14 +19,14 @@ const posts = [
             {type: 'link', content: 'jane.design/doctorcare'},
             
     ],
-    publishAt: new Date ('2025-01-14 20:32:00')
+    publishedAt: new Date ('2025-01-14 20:32:00')
   },
   {
     id: 2,
     author: {
       avatarUrl: 'https://github.com/maykbrito.png',
       name:'Mayk Brito',
-      role: 'Educator @Rocketseat'
+      role: 'Educator @Rocketseat',
     },
     content: [ 
          { type: 'paragraph', content: 'Fala galeraa 👋'},
@@ -34,7 +34,7 @@ const posts = [
             {type: 'link', content: 'jane.design/doctorcare'},
             
     ],
-    publishAt: new Date ('2022-01-15 16:40:00')
+    publishedAt: new Date ('2022-01-15 16:40:00')
   },
 ];
 
@@ -53,9 +53,10 @@ export function App(){
     <main>
      {posts.map(post => {
       return ( <Post
+      key={post.id}
        author={post.author}
        content={post.content}
-       publisedAt={post.publishedAt}
+       publishedAt={post.publishedAt}
        />
       )
      })}

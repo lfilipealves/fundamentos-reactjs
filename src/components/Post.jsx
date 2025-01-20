@@ -1,34 +1,80 @@
+import { format, formatDistanceToNow } from 'date-fns';
+import ptBR from 'date-fns/locale/pt-BR'
 import { Avatar } from './Avatar';
 import { Comment } from './Comment';
 import styles from './Post.module.css';
+import { useState } from 'react';
 
 
-export function Post(props){
-    console.log(props);
+
+
+export function Post({ author, publishedAt, content }){
+    const [comments, setComments] = useState([
+        'Post muito bacana, hein?!'
+    ])
+
+    const [newCommentText, setNewCommentText] = useState('')
+
+    const publishedDateFormatted = format(publishedAt, "d 'de' MMMM HH:mm 'h'", {
+        locale: ptBR,
+    })
+    
+    const publishedDateRelativeToNow = formatDistanceToNow(publishedAt, {
+        locale: ptBR, 
+        addSuffix: true,
+    })  
+
+    function handleCreateNewComment() {
+        event.preventDefault()
+
+        setComments ([...comments, newCommentText]);
+        setNewCommentText('');
+    }
+
+    function handleNewCommentChange () {
+        setNewCommentText(event.target.value);
+        
+    }
+
+    function deleteComment(comment){
+        console.log(`Deletar Comentário ${comment}`)
+    }
+
     return (
         <article className={styles.post}>
             <header>
                 <div className={styles.author}>
-                    <Avatar src="https://cdn3d.iconscout.com/3d/premium/thumb/programmer-3d-icon-download-in-png-blend-fbx-gltf-file-formats--development-coding-programming-profession-avatar-pack-people-icons-7675299.png" alt="" />
+                    <Avatar src={author.avatarUrl} />
                     <div className={styles.authorInfor}>
-                        <strong>Diego Fernandes</strong>
-                        <span>Web Developer</span>
+                        <strong>{author.name}</strong>
+                        <span>{author.role}</span>
                     </div>
                 </div>
 
 
-                <time title="11 de Maio às 08:13h" dateTime="2022-05-11 08:13:30">Publicado há 1h</time>
+                <time title={publishedDateFormatted} dateTime={publishedAt.toISOString()}>
+                    {publishedDateRelativeToNow}
+                    </time>
             </header>
 
         <div className={styles.content}>
-
+        {content.map(line => {
+            if (line.type === 'paragraph'){
+                return <p key={line.content}>{line.content}</p>; 
+            } else if (line.type === 'link') {
+                return <p key={line.content}><a href="#">{line.content}</a></p>;
+            }
+        })}
         </div>
 
-        <form className={styles.commentForm}>
+        <form onSubmit={handleCreateNewComment} className={styles.commentForm}>
             <strong>Deixe seu feedback</strong>
 
             <textarea
-            placeholder="Deixe um comentário" />
+            name='comment'
+            placeholder="Deixe um comentário"
+            value={newCommentText}
+            onChange={handleNewCommentChange} />
 
             <footer>
                 <button type="submit">Publicar</button>
@@ -37,9 +83,10 @@ export function Post(props){
         </form>
 
         <div className={styles.commentList}>
-            <Comment />
-             <Comment />
-              <Comment />
+        
+        {comments.map(comment => {
+            return <Comment key={comment} content={comment} onDeleteComment={deleteComment} />
+        })}
 
         </div>
         </article>
